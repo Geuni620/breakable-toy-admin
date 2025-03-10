@@ -1,32 +1,22 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import {
   Outlet,
   RouterProvider,
-  Link,
   createRouter,
   createRoute,
   createRootRoute,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { Layout } from "./layout";
 
 const rootRoute = createRootRoute({
   component: () => (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
+    <Layout>
       <Outlet />
       <TanStackRouterDevtools />
-    </>
+    </Layout>
   ),
 });
 
@@ -34,19 +24,15 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
   component: function Index() {
-    return <App />;
+    return (
+      <div className="bg-gray-300 w-full h-full flex items-center justify-center">
+        <h3 className="text-white text-2xl font-bold">Welcome Home!</h3>
+      </div>
+    );
   },
 });
 
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/about",
-  component: function About() {
-    return <div className="p-2">Hello from About!</div>;
-  },
-});
-
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
+const routeTree = rootRoute.addChildren([indexRoute]);
 
 const router = createRouter({ routeTree });
 
