@@ -10,49 +10,170 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
+import { Route as rootRoute } from './routes/__root'
+import { Route as SettingsImport } from './routes/settings'
+import { Route as SearchImport } from './routes/search'
+import { Route as InboxImport } from './routes/inbox'
+import { Route as CalendarImport } from './routes/calendar'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
+const SettingsRoute = SettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SearchRoute = SearchImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InboxRoute = InboxImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CalendarRoute = CalendarImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
-  interface FileRoutesByPath {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarImport
+      parentRoute: typeof rootRoute
+    }
+    '/inbox': {
+      id: '/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof InboxImport
+      parentRoute: typeof rootRoute
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
+  }
 }
 
 // Create and export the route tree
 
-export interface FileRoutesByFullPath {}
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+}
 
-export interface FileRoutesByTo {}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+}
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: never;
-  fileRoutesByTo: FileRoutesByTo;
-  to: never;
-  id: "__root__";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/calendar' | '/inbox' | '/search' | '/settings'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/calendar' | '/inbox' | '/search' | '/settings'
+  id: '__root__' | '/' | '/calendar' | '/inbox' | '/search' | '/settings'
+  fileRoutesById: FileRoutesById
 }
 
-export interface RootRouteChildren {}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  CalendarRoute: typeof CalendarRoute
+  InboxRoute: typeof InboxRoute
+  SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
+}
 
-const rootRouteChildren: RootRouteChildren = {};
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  CalendarRoute: CalendarRoute,
+  InboxRoute: InboxRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
   "routes": {
     "__root__": {
       "filePath": "__root.tsx",
-      "children": []
+      "children": [
+        "/",
+        "/calendar",
+        "/inbox",
+        "/search",
+        "/settings"
+      ]
+    },
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/calendar": {
+      "filePath": "calendar.tsx"
+    },
+    "/inbox": {
+      "filePath": "inbox.tsx"
+    },
+    "/search": {
+      "filePath": "search.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
     }
   }
 }
