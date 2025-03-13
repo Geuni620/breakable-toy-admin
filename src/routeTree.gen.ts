@@ -16,6 +16,7 @@ import { Route as SearchImport } from './routes/search'
 import { Route as InboxImport } from './routes/inbox'
 import { Route as CalendarImport } from './routes/calendar'
 import { Route as IndexImport } from './routes/index'
+import { Route as CalendarListImport } from './routes/calendar.list'
 
 // Create/Update Routes
 
@@ -47,6 +48,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const CalendarListRoute = CalendarListImport.update({
+  id: '/list',
+  path: '/list',
+  getParentRoute: () => CalendarRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -88,48 +95,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
+    '/calendar/list': {
+      id: '/calendar/list'
+      path: '/list'
+      fullPath: '/calendar/list'
+      preLoaderRoute: typeof CalendarListImport
+      parentRoute: typeof CalendarImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface CalendarRouteChildren {
+  CalendarListRoute: typeof CalendarListRoute
+}
+
+const CalendarRouteChildren: CalendarRouteChildren = {
+  CalendarListRoute: CalendarListRoute,
+}
+
+const CalendarRouteWithChildren = CalendarRoute._addFileChildren(
+  CalendarRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
+  '/calendar': typeof CalendarRouteWithChildren
   '/inbox': typeof InboxRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/calendar/list': typeof CalendarListRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
+  '/calendar': typeof CalendarRouteWithChildren
   '/inbox': typeof InboxRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/calendar/list': typeof CalendarListRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
+  '/calendar': typeof CalendarRouteWithChildren
   '/inbox': typeof InboxRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/calendar/list': typeof CalendarListRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calendar' | '/inbox' | '/search' | '/settings'
+  fullPaths:
+    | '/'
+    | '/calendar'
+    | '/inbox'
+    | '/search'
+    | '/settings'
+    | '/calendar/list'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendar' | '/inbox' | '/search' | '/settings'
-  id: '__root__' | '/' | '/calendar' | '/inbox' | '/search' | '/settings'
+  to: '/' | '/calendar' | '/inbox' | '/search' | '/settings' | '/calendar/list'
+  id:
+    | '__root__'
+    | '/'
+    | '/calendar'
+    | '/inbox'
+    | '/search'
+    | '/settings'
+    | '/calendar/list'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CalendarRoute: typeof CalendarRoute
+  CalendarRoute: typeof CalendarRouteWithChildren
   InboxRoute: typeof InboxRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
@@ -137,7 +179,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CalendarRoute: CalendarRoute,
+  CalendarRoute: CalendarRouteWithChildren,
   InboxRoute: InboxRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
@@ -164,7 +206,10 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/calendar": {
-      "filePath": "calendar.tsx"
+      "filePath": "calendar.tsx",
+      "children": [
+        "/calendar/list"
+      ]
     },
     "/inbox": {
       "filePath": "inbox.tsx"
@@ -174,6 +219,10 @@ export const routeTree = rootRoute
     },
     "/settings": {
       "filePath": "settings.tsx"
+    },
+    "/calendar/list": {
+      "filePath": "calendar.list.tsx",
+      "parent": "/calendar"
     }
   }
 }
