@@ -4,6 +4,11 @@ import { InvoiceMockup } from "./invoice";
 const meta = {
   title: "common/invoice",
   component: InvoiceMockup,
+  parameters: {
+    controls: {
+      expanded: true,
+    },
+  },
   argTypes: {
     invoice: {
       description: "청구서 정보를 포함하는 객체",
