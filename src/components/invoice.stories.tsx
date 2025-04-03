@@ -1,7 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { InvoiceMockup } from "./invoice";
+import { INVOICE_DATA } from "./constant";
 
-const meta = {
+type Invoice = typeof INVOICE_DATA;
+
+interface InvoiceStoryProps {
+  invoiceData: Invoice;
+  invoiceNumber?: string;
+  company?: string;
+}
+
+const meta: Meta<InvoiceStoryProps> = {
   title: "common/invoice",
   component: InvoiceMockup,
   parameters: {
@@ -10,38 +19,63 @@ const meta = {
     },
   },
   argTypes: {
-    invoice: {
+    invoiceData: {
       description: "청구서 정보를 포함하는 객체",
       control: "object",
     },
-    "invoice.id": {
+    invoiceNumber: {
       description: "청구서 고유 식별자",
-      control: "text",
+      defaultValue: { summary: INVOICE_DATA.invoiceNumber },
+      control: {
+        type: "text",
+        disable: true,
+      },
+      table: {
+        type: { summary: "string" },
+        category: "송장 정보",
+      },
     },
-    "invoice.createdAt": {
-      description: "청구서 생성일",
-      control: "date",
-    },
-    "invoice.dueDate": {
-      description: "지불 기한",
-      control: "date",
-    },
-    "invoice.amount": {
-      description: "청구 금액",
-      control: { type: "number", min: 0 },
-    },
-    "invoice.status": {
-      description: "청구서 상태",
-      control: "select",
-      options: ["pending", "paid", "overdue", "cancelled"],
+
+    company: {
+      description: "회사명",
+      defaultValue: { summary: INVOICE_DATA.company.name },
+      control: {
+        type: "text",
+      },
+      table: {
+        type: { summary: INVOICE_DATA.company.name },
+        category: "회사명",
+      },
     },
   },
-} satisfies Meta<typeof InvoiceMockup>;
+
+  args: {
+    invoiceData: INVOICE_DATA,
+    company: INVOICE_DATA.company.name,
+  },
+};
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => <InvoiceMockup />,
+  render: (args) => {
+    console.log("args", args);
+
+    const customArgs = {
+      ...args,
+      invoiceData: {
+        ...args.invoiceData,
+        company: {
+          ...args.invoiceData.company,
+          name: args.company ?? args.invoiceData.company.name,
+        },
+      },
+    };
+
+    console.log("customArgs", customArgs);
+
+    return <InvoiceMockup invoiceData={customArgs.invoiceData} />;
+  },
 };
