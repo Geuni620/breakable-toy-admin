@@ -4,10 +4,22 @@ import { INVOICE_DATA } from "./constant";
 
 type Invoice = typeof INVOICE_DATA;
 
+const FIELD_SELECTOR = {
+  none: null,
+  all: "all",
+  송장번호: '[data-testid="invo-no"]',
+  접수일자: '[data-testid="reception-dt"]',
+  분류코드: '[data-testid^="classification-cd"]',
+};
+
 interface InvoiceStoryProps {
   invoiceData: Invoice;
   invoiceNumber?: string;
   company?: string;
+
+  highlightField: keyof typeof FIELD_SELECTOR;
+  highlightColor: string;
+  highlightStyle: string;
 }
 
 const meta: Meta<InvoiceStoryProps> = {
@@ -17,6 +29,7 @@ const meta: Meta<InvoiceStoryProps> = {
     controls: {
       expanded: true,
     },
+    actions: { argTypesRegex: "^on.*" },
   },
   argTypes: {
     invoiceData: {
@@ -61,8 +74,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => {
-    console.log("args", args);
-
     const customArgs = {
       ...args,
       invoiceData: {
@@ -73,8 +84,6 @@ export const Default: Story = {
         },
       },
     };
-
-    console.log("customArgs", customArgs);
 
     return <InvoiceMockup invoiceData={customArgs.invoiceData} />;
   },
