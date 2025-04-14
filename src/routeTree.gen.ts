@@ -11,30 +11,21 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SettingsImport } from './routes/settings'
-import { Route as SearchImport } from './routes/search'
-import { Route as InboxImport } from './routes/inbox'
+import { Route as OriginalImport } from './routes/original'
+import { Route as NotionImport } from './routes/notion'
 import { Route as CalendarImport } from './routes/calendar'
-import { Route as IndexImport } from './routes/index'
-import { Route as CalendarListImport } from './routes/calendar.list'
 
 // Create/Update Routes
 
-const SettingsRoute = SettingsImport.update({
-  id: '/settings',
-  path: '/settings',
+const OriginalRoute = OriginalImport.update({
+  id: '/original',
+  path: '/original',
   getParentRoute: () => rootRoute,
 } as any)
 
-const SearchRoute = SearchImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const InboxRoute = InboxImport.update({
-  id: '/inbox',
-  path: '/inbox',
+const NotionRoute = NotionImport.update({
+  id: '/notion',
+  path: '/notion',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,29 +35,10 @@ const CalendarRoute = CalendarImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CalendarListRoute = CalendarListImport.update({
-  id: '/list',
-  path: '/list',
-  getParentRoute: () => CalendarRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/calendar': {
       id: '/calendar'
       path: '/calendar'
@@ -74,115 +46,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalendarImport
       parentRoute: typeof rootRoute
     }
-    '/inbox': {
-      id: '/inbox'
-      path: '/inbox'
-      fullPath: '/inbox'
-      preLoaderRoute: typeof InboxImport
+    '/notion': {
+      id: '/notion'
+      path: '/notion'
+      fullPath: '/notion'
+      preLoaderRoute: typeof NotionImport
       parentRoute: typeof rootRoute
     }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchImport
+    '/original': {
+      id: '/original'
+      path: '/original'
+      fullPath: '/original'
+      preLoaderRoute: typeof OriginalImport
       parentRoute: typeof rootRoute
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsImport
-      parentRoute: typeof rootRoute
-    }
-    '/calendar/list': {
-      id: '/calendar/list'
-      path: '/list'
-      fullPath: '/calendar/list'
-      preLoaderRoute: typeof CalendarListImport
-      parentRoute: typeof CalendarImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface CalendarRouteChildren {
-  CalendarListRoute: typeof CalendarListRoute
-}
-
-const CalendarRouteChildren: CalendarRouteChildren = {
-  CalendarListRoute: CalendarListRoute,
-}
-
-const CalendarRouteWithChildren = CalendarRoute._addFileChildren(
-  CalendarRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/calendar': typeof CalendarRouteWithChildren
-  '/inbox': typeof InboxRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/calendar/list': typeof CalendarListRoute
+  '/calendar': typeof CalendarRoute
+  '/notion': typeof NotionRoute
+  '/original': typeof OriginalRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/calendar': typeof CalendarRouteWithChildren
-  '/inbox': typeof InboxRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/calendar/list': typeof CalendarListRoute
+  '/calendar': typeof CalendarRoute
+  '/notion': typeof NotionRoute
+  '/original': typeof OriginalRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/calendar': typeof CalendarRouteWithChildren
-  '/inbox': typeof InboxRoute
-  '/search': typeof SearchRoute
-  '/settings': typeof SettingsRoute
-  '/calendar/list': typeof CalendarListRoute
+  '/calendar': typeof CalendarRoute
+  '/notion': typeof NotionRoute
+  '/original': typeof OriginalRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/calendar'
-    | '/inbox'
-    | '/search'
-    | '/settings'
-    | '/calendar/list'
+  fullPaths: '/calendar' | '/notion' | '/original'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendar' | '/inbox' | '/search' | '/settings' | '/calendar/list'
-  id:
-    | '__root__'
-    | '/'
-    | '/calendar'
-    | '/inbox'
-    | '/search'
-    | '/settings'
-    | '/calendar/list'
+  to: '/calendar' | '/notion' | '/original'
+  id: '__root__' | '/calendar' | '/notion' | '/original'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  CalendarRoute: typeof CalendarRouteWithChildren
-  InboxRoute: typeof InboxRoute
-  SearchRoute: typeof SearchRoute
-  SettingsRoute: typeof SettingsRoute
+  CalendarRoute: typeof CalendarRoute
+  NotionRoute: typeof NotionRoute
+  OriginalRoute: typeof OriginalRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  CalendarRoute: CalendarRouteWithChildren,
-  InboxRoute: InboxRoute,
-  SearchRoute: SearchRoute,
-  SettingsRoute: SettingsRoute,
+  CalendarRoute: CalendarRoute,
+  NotionRoute: NotionRoute,
+  OriginalRoute: OriginalRoute,
 }
 
 export const routeTree = rootRoute
@@ -195,34 +115,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
         "/calendar",
-        "/inbox",
-        "/search",
-        "/settings"
+        "/notion",
+        "/original"
       ]
-    },
-    "/": {
-      "filePath": "index.tsx"
     },
     "/calendar": {
-      "filePath": "calendar.tsx",
-      "children": [
-        "/calendar/list"
-      ]
+      "filePath": "calendar.tsx"
     },
-    "/inbox": {
-      "filePath": "inbox.tsx"
+    "/notion": {
+      "filePath": "notion.tsx"
     },
-    "/search": {
-      "filePath": "search.tsx"
-    },
-    "/settings": {
-      "filePath": "settings.tsx"
-    },
-    "/calendar/list": {
-      "filePath": "calendar.list.tsx",
-      "parent": "/calendar"
+    "/original": {
+      "filePath": "original.tsx"
     }
   }
 }
