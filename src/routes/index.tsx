@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
-import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
+  pendingComponent: () => <div>Loading...</div>,
+  loader: async () => {
+    const res = await fetch("http://localhost:3000/payments");
+    const data = await res.json();
+    return data;
+  },
 });
 
 interface Payment {
@@ -30,25 +35,12 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 function RouteComponent() {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const data = Route.useLoaderData();
 
-  useEffect(() => {
-    fetch("http://localhost:3000/payments", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPayments(data.data);
-      });
-  }, []);
-
-  console.log("payments", payments);
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <h1 className="text-2xl font-bold">Home</h1>
-      <DataTable data={payments} columns={columns} />
+      <DataTable data={data.data} columns={columns} />
     </div>
   );
 }
