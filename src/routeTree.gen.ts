@@ -11,27 +11,13 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as OriginalImport } from './routes/original'
-import { Route as NotionImport } from './routes/notion'
-import { Route as CalendarImport } from './routes/calendar'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const OriginalRoute = OriginalImport.update({
-  id: '/original',
-  path: '/original',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const NotionRoute = NotionImport.update({
-  id: '/notion',
-  path: '/notion',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CalendarRoute = CalendarImport.update({
-  id: '/calendar',
-  path: '/calendar',
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,25 +25,11 @@ const CalendarRoute = CalendarImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/calendar': {
-      id: '/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof CalendarImport
-      parentRoute: typeof rootRoute
-    }
-    '/notion': {
-      id: '/notion'
-      path: '/notion'
-      fullPath: '/notion'
-      preLoaderRoute: typeof NotionImport
-      parentRoute: typeof rootRoute
-    }
-    '/original': {
-      id: '/original'
-      path: '/original'
-      fullPath: '/original'
-      preLoaderRoute: typeof OriginalImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -66,43 +38,33 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/calendar': typeof CalendarRoute
-  '/notion': typeof NotionRoute
-  '/original': typeof OriginalRoute
+  '/': typeof IndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/calendar': typeof CalendarRoute
-  '/notion': typeof NotionRoute
-  '/original': typeof OriginalRoute
+  '/': typeof IndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/calendar': typeof CalendarRoute
-  '/notion': typeof NotionRoute
-  '/original': typeof OriginalRoute
+  '/': typeof IndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/calendar' | '/notion' | '/original'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/calendar' | '/notion' | '/original'
-  id: '__root__' | '/calendar' | '/notion' | '/original'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  CalendarRoute: typeof CalendarRoute
-  NotionRoute: typeof NotionRoute
-  OriginalRoute: typeof OriginalRoute
+  IndexRoute: typeof IndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  CalendarRoute: CalendarRoute,
-  NotionRoute: NotionRoute,
-  OriginalRoute: OriginalRoute,
+  IndexRoute: IndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -115,19 +77,11 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/calendar",
-        "/notion",
-        "/original"
+        "/"
       ]
     },
-    "/calendar": {
-      "filePath": "calendar.tsx"
-    },
-    "/notion": {
-      "filePath": "notion.tsx"
-    },
-    "/original": {
-      "filePath": "original.tsx"
+    "/": {
+      "filePath": "index.tsx"
     }
   }
 }
