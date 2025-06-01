@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
+import { AppSkeleton } from "@/components/app-skeleton";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
-  pendingComponent: () => <div>Loading...</div>,
+  pendingComponent: () => <AppSkeleton />,
   loader: async () => {
     const res = await fetch("http://localhost:3000/payments");
     const data = await res.json();
+
     return data;
   },
 });
@@ -39,7 +41,6 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <h1 className="text-2xl font-bold">Home</h1>
       <DataTable data={data.data} columns={columns} />
     </div>
   );
