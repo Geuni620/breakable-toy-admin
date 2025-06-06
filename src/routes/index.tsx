@@ -2,16 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { AppSkeleton } from "@/components/app-skeleton";
-import { ApiResponseSchema, type Payment } from "@/model/payment";
+import { paymentService } from "@/service/payment";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
   pendingComponent: () => <AppSkeleton />,
   loader: async () => {
-    const res = await fetch("http://localhost:3000/payments");
-    const rawData = await res.json();
-    const validatedResponse = ApiResponseSchema.parse(rawData);
-    return validatedResponse;
+    const data = await paymentService.getPayments();
+    return data;
   },
 });
 

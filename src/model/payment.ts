@@ -13,10 +13,3 @@ export const paymentSchema = z.object({
 });
 
 export type Payment = z.infer<typeof paymentSchema>;
-
-export const ApiResponseSchema = z.object({
-  data: z.array(paymentSchema),
-  total: z.number(),
-  page: z.number(),
-  limit: z.number(),
-});
