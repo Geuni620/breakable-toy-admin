@@ -5,7 +5,7 @@ import { DataTable } from "@/components/data-table";
 import { AppSkeleton } from "@/components/app-skeleton";
 import { paymentService } from "@/service/payment";
 import { ErrorBoundary } from "@/app/error-boundary";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -49,47 +49,41 @@ function RouteComponent() {
   const data = Route.useLoaderData();
   const [currentUserId, setCurrentUserId] = useState("user1");
 
+  console.log("currentUserId", currentUserId);
+
   return (
     <div className="p-4">
-      <div className="mb-4 p-4 border rounded bg-gray-50">
-        <h3 className="font-bold mb-2">👤 사용자 전환</h3>
-        <div className="space-x-2 mb-2">
+      <div className="mb-4 p-4 border rounded">
+        <h3 className="font-bold mb-2">사용자 선택</h3>
+        <div className="flex gap-2 mb-2">
           <Button
-            className="cursor-pointer"
+            variant={currentUserId === "user1" ? "default" : "outline"}
             onClick={() => setCurrentUserId("user1")}
           >
-            User 1 (정상)
+            User 1
           </Button>
           <Button
-            className="cursor-pointer"
+            variant={currentUserId === "user2" ? "default" : "outline"}
             onClick={() => setCurrentUserId("user2")}
           >
-            User 2 (정상)
+            User 2
           </Button>
           <Button
-            className="cursor-pointer"
+            variant={currentUserId === "error-user" ? "destructive" : "outline"}
             onClick={() => setCurrentUserId("error-user")}
           >
-            Error User (에러 발생)
+            Error User
           </Button>
         </div>
-        <p className="text-sm">현재 선택: {currentUserId}</p>
       </div>
 
-      {/* ErrorBoundary (아직 resetKeys 없음) */}
       <ErrorBoundary
-        renderFallback={(error, reset) => (
+        renderFallback={({ error, reset }) => (
           <div className="p-4 border-2 border-red-300 rounded bg-red-50">
-            <h2 className="font-bold text-red-700">💥 에러 발생!</h2>
-            <p className="text-red-600">{error.message}</p>
-            <p className="text-sm text-gray-600 mt-2">
-              🤔 문제: 다른 사용자로 전환해도 에러 화면이 계속 보입니다!
-            </p>
-            <Button
-              onClick={reset}
-              className="bg-red-500 text-white cursor-pointer"
-            >
-              수동으로 리셋 (불편함)
+            <h2 className="font-bold text-red-700">에러 발생</h2>
+            <p>{error.message}</p>
+            <Button variant="destructive" className="mt-2" onClick={reset}>
+              수동으로 리셋
             </Button>
           </div>
         )}

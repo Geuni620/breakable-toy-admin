@@ -1,11 +1,16 @@
 import * as React from "react";
 
+interface RenderFallbackProps {
+  error: Error;
+  reset: () => void;
+}
+
 type Props = {
-  renderFallback: (error: Error, reset: () => void) => React.ReactNode;
+  renderFallback: (props: RenderFallbackProps) => React.ReactNode;
 };
 
-interface State<ErrorType extends Error = Error> {
-  error: ErrorType | null;
+interface State {
+  error: Error | null;
 }
 
 const initialState: State = {
@@ -28,15 +33,16 @@ export class ErrorBoundary extends React.Component<
   }
 
   resetErrorBoundary = () => {
+    console.log("error reset");
     this.setState(initialState);
   };
 
   render() {
     if (this.state.error !== null) {
-      return this.props.renderFallback(
-        this.state.error,
-        this.resetErrorBoundary
-      );
+      return this.props.renderFallback({
+        error: this.state.error,
+        reset: this.resetErrorBoundary,
+      });
     }
 
     return this.props.children;
