@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, retainSearchParams } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { AppSkeleton } from "@/components/app-skeleton";
@@ -7,12 +7,25 @@ import { paymentService } from "@/service/payment";
 import { ErrorBoundary } from "@/app/error-boundary";
 import { Button } from "@/components/ui/button";
 import type { Payment } from "@/model/payment";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+
+const searchSchema = z.object({
+  email: z.string().optional().default(""),
+});
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
   pendingComponent: () => <AppSkeleton />,
-  loader: async () => {
-    const data = await paymentService.getPayments();
+  validateSearch: zodValidator(searchSchema),
+  search: {
+    middlewares: [retainSearchParams(["email"])],
+  },
+  loaderDeps: ({ search }) => ({
+    email: search.email,
+  }),
+  loader: async ({ deps }) => {
+    const data = await paymentService.getPayments({ email: deps.email });
     return data;
   },
 });
@@ -32,50 +45,13 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-function UserDataDisplay({ userId }: { userId: string }) {
-  if (userId === "error-user") {
-    throw new Error(`💥 사용자 ID '${userId}'에서 에러 발생!`);
-  }
-
-  return (
-    <div className="p-4 border rounded bg-green-50">
-      <h3 className="font-bold">사용자 데이터</h3>
-      <p>현재 사용자 ID: {userId}</p>
-      <p>✅ 정상적으로 로드된 데이터</p>
-    </div>
-  );
-}
-
 function RouteComponent() {
   const data = Route.useLoaderData();
-  const [currentUserId, setCurrentUserId] = useState("user1");
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
 
   return (
     <div className="p-4">
-      <div className="mb-4 p-4 border rounded">
-        <h3 className="font-bold mb-2">사용자 선택</h3>
-        <div className="flex gap-2 mb-2">
-          <Button
-            variant={currentUserId === "user1" ? "default" : "outline"}
-            onClick={() => setCurrentUserId("user1")}
-          >
-            User 1
-          </Button>
-          <Button
-            variant={currentUserId === "user2" ? "default" : "outline"}
-            onClick={() => setCurrentUserId("user2")}
-          >
-            User 2
-          </Button>
-          <Button
-            variant={currentUserId === "error-user" ? "destructive" : "outline"}
-            onClick={() => setCurrentUserId("error-user")}
-          >
-            Error User
-          </Button>
-        </div>
-      </div>
-
       <ErrorBoundary
         renderFallback={({ error, reset }) => (
           <div className="p-4 border-2 border-red-300 rounded bg-red-50">
@@ -87,8 +63,21 @@ function RouteComponent() {
           </div>
         )}
       >
-        <UserDataDisplay userId={currentUserId} />
         <div className="mt-4">
+          <Input
+            type="text"
+            placeholder="Search"
+            className="w-3xs"
+            value={search.email}
+            onChange={(e) =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }),
+              })
+            }
+          />
           <DataTable data={data.data} columns={columns} />
         </div>
       </ErrorBoundary>

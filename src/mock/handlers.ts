@@ -11,10 +11,20 @@ const MOCK_PAYMENTS = Array.from({ length: 100 }, () => ({
 }));
 
 export const handlers = [
-  http.get("http://localhost:3000/payments", () => {
+  http.get("http://localhost:3000/payments", ({ request }) => {
+    const url = new URL(request.url);
+    const email = url.searchParams.get("email");
+
+    let filteredPayments = MOCK_PAYMENTS;
+    if (email && email.trim()) {
+      filteredPayments = MOCK_PAYMENTS.filter((payment) =>
+        payment.email.toLowerCase().includes(email.toLowerCase().trim())
+      );
+    }
+
     return HttpResponse.json({
-      data: MOCK_PAYMENTS,
-      total: MOCK_PAYMENTS.length,
+      data: filteredPayments,
+      total: filteredPayments.length,
       page: 1,
       limit: 10,
     });
