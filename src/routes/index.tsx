@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import type { Payment } from "@/model/payment";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
+import { Clock, Loader2, CheckCircle, XCircle } from "lucide-react";
 
 const searchSchema = z.object({
   email: z.string().optional().default(""),
@@ -30,10 +31,46 @@ export const Route = createFileRoute("/")({
   },
 });
 
+const STATUS_CONFIG = {
+  pending: {
+    icon: Clock,
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+  },
+  processing: {
+    icon: Loader2,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+  },
+  success: {
+    icon: CheckCircle,
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+  },
+  failed: {
+    icon: XCircle,
+    color: "text-red-600",
+    bgColor: "bg-red-50",
+  },
+} as const;
+
 export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const { icon: Icon, color, bgColor } = STATUS_CONFIG[status];
+
+      return (
+        <div className="flex items-center gap-2">
+          <div className={`rounded-full p-1 ${bgColor}`}>
+            <Icon className={`size-4 ${color}`} />
+          </div>
+          <span>{status}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "email",
