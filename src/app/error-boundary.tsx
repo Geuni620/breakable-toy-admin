@@ -1,4 +1,5 @@
 import * as React from "react";
+import { isDifferentArray } from "@/lib/utils";
 
 interface RenderFallbackProps {
   error: Error;
@@ -7,6 +8,7 @@ interface RenderFallbackProps {
 
 type Props = {
   renderFallback: (props: RenderFallbackProps) => React.ReactNode;
+  resetKeys?: unknown[];
 };
 
 interface State {
@@ -37,6 +39,15 @@ export class ErrorBoundary extends React.Component<
     this.setState(initialState);
   };
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.state.error == null) {
+      return;
+    }
+
+    if (isDifferentArray(prevProps.resetKeys, this.props.resetKeys)) {
+      this.resetErrorBoundary();
+    }
+  }
   render() {
     if (this.state.error !== null) {
       return this.props.renderFallback({

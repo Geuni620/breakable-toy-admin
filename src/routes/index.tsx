@@ -6,6 +6,7 @@ import { AppSkeleton } from "@/components/app-skeleton";
 import { paymentService } from "@/service/payment";
 import { ErrorBoundary } from "@/app/error-boundary";
 import { Button } from "@/components/ui/button";
+import type { Payment } from "@/model/payment";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -48,8 +49,6 @@ function UserDataDisplay({ userId }: { userId: string }) {
 function RouteComponent() {
   const data = Route.useLoaderData();
   const [currentUserId, setCurrentUserId] = useState("user1");
-
-  console.log("currentUserId", currentUserId);
 
   return (
     <div className="p-4">
