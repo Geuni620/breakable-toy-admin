@@ -7,8 +7,8 @@ import { paymentService } from "@/service/payment";
 import { ErrorBoundary } from "@/app/error-boundary";
 import { Button } from "@/components/ui/button";
 import { type Payment, STATUS_CONFIG } from "@/model/payment";
-import { Input } from "@/components/ui/input";
 import { z } from "zod";
+import { SearchInput } from "@/components/search-input";
 
 const searchSchema = z.object({
   email: z.string().optional().default(""),
@@ -60,8 +60,6 @@ export const columns: ColumnDef<Payment>[] = [
 
 function RouteComponent() {
   const data = Route.useLoaderData();
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
 
   return (
     <div className="p-4">
@@ -77,20 +75,7 @@ function RouteComponent() {
         )}
       >
         <div className="mt-4">
-          <Input
-            type="text"
-            placeholder="Search"
-            className="w-3xs"
-            value={search.email}
-            onChange={(e) =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                }),
-              })
-            }
-          />
+          <SearchInput />
 
           <DataTable data={data.data} columns={columns} />
         </div>
