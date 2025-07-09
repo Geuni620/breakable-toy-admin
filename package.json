@@ -9,7 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "t-wrap": "tsx src/script/cli.ts",
+    "t-wrap:components": "tsx src/script/cli.ts -d ./src/components",
+    "t-wrap:routes": "tsx src/script/cli.ts -d ./src/routes",
+    "t-wrap:check": "tsx src/script/cli.ts --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
@@ -30,6 +34,10 @@
     "zod": "^3.25.46"
   },
   "devDependencies": {
+    "@babel/generator": "^7.28.0",
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@babel/types": "^7.28.0",
     "@chromatic-com/storybook": "^3.2.5",
     "@eslint/js": "^9.21.0",
     "@faker-js/faker": "^9.8.0",
@@ -46,6 +54,8 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -56,11 +66,13 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.11.4",
+    "glob": "^11.0.3",
     "globals": "^15.15.0",
     "jsdom": "^26.1.0",
     "msw": "^2.8.7",
     "playwright": "^1.51.0",
     "storybook": "^8.6.4",
+    "tsx": "^4.20.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
